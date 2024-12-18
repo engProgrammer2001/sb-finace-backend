@@ -6,9 +6,15 @@ import uploadFooterLogoRoute from "./src/routes/footerandfavicon.route.js";
 import uploadFaviconRoute from "./src/routes/favicon.route.js";
 import connectDB from "./src/config/db.js";
 
-const app = express();
-const PORT = process.env.PORT || 5100;
 
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+
+
+const PORT = process.env.PORT || 5151;
 // Serve an image using a direct URL
 app.get("/", (req, res) => {
   const imageUrl =
@@ -40,11 +46,6 @@ app.get("/", (req, res) => {
   `;
   res.send(htmlContent);
 });
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 app.use("/uploads", express.static("uploads"));
 app.use("/user", userRoute);
