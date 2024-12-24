@@ -3,18 +3,18 @@ import cors from "cors";
 import userRoute from "./src/routes/user.route.js";
 import uploadLogoRoute from "./src/routes/uploadLogo.route.js";
 import uploadFooterLogoRoute from "./src/routes/footerandfavicon.route.js";
-import uploadFaviconRoute from "./src/routes/favicon.route.js";
+import applyLoanRoute from "./src/routes/applyLoan.route.js";
 import connectDB from "./src/config/db.js";
 
-
-
 const app = express();
-app.use(express.json());
-app.use(cors());
 
+// Middleware
+app.use(express.json()); 
+app.use(cors());   
 
-
+// Constants
 const PORT = process.env.PORT || 5151;
+
 // Serve an image using a direct URL
 app.get("/", (req, res) => {
   const imageUrl =
@@ -47,14 +47,31 @@ app.get("/", (req, res) => {
   res.send(htmlContent);
 });
 
+// Static files
 app.use("/uploads", express.static("uploads"));
+
+
+// Routes
 app.use("/user", userRoute);
 app.use("/logo", uploadLogoRoute);
 app.use("/footerlogo", uploadFooterLogoRoute);
-app.use("/favicon", uploadFaviconRoute);
+// app.use("/favicon", uploadFaviconRoute);
+app.use("/loans", applyLoanRoute);
+
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Internal Server Error" });
+});
+
 
 // Start the server
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, async () => {
+  try {
+    await connectDB(); 
+    console.log(`Server is running on http://localhost:${PORT}`);
+  } catch (error) {
+    console.error("Failed to connect to the database:", error.message);
+  }
 });
+

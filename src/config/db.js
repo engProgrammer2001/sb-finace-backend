@@ -1,13 +1,15 @@
-//id : ajrealEstate Pass : PbDMONoDlZdba3Xn
-
 import mongoose from "mongoose";
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.Mongo_Url);
-    console.log("MongoDB connected");
+    const conn = await mongoose.connect(process.env.Mongo_Url);
+
+    // Log connection success
+    console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (err) {
-    console.log(err);
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
   }
 };
+
 export default connectDB;
